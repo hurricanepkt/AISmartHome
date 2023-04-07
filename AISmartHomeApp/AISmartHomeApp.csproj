@@ -6,7 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishProfile>DefaultContainer</PublishProfile>
     <RollForward>LatestMinor</RollForward>
-    <ContainerImageTags>1.1.1;latest</ContainerImageTags>  
+    <ContainerImageName>aismarthome</ContainerImageName>
+    <ContainerImageTags>1.1.2;latest</ContainerImageTags>  
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <ContainerPort>80</ContainerPort>
   </PropertyGroup>
