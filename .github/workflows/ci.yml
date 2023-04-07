@@ -28,7 +28,7 @@ jobs:
       working-directory: ./AISmartHomeApp/
       run: dotnet build --no-restore
   docker-arm:
-    name:  Docker Build & Push
+    name:  Docker Build & Push - arm
     runs-on: ubuntu-latest
     needs:
       - build
@@ -44,9 +44,9 @@ jobs:
       working-directory: ./AISmartHomeApp/
       run: dotnet publish -c Release --arch arm 
     - name: Push Image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/aismarthome --all-tags
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
   docker-arm64:
-    name:  Docker Build & Push
+    name:  Docker Build & Push - arm64
     runs-on: ubuntu-latest
     needs:
       - build
@@ -62,9 +62,9 @@ jobs:
       working-directory: ./AISmartHomeApp/
       run: dotnet publish -c Release --arch arm64 
     - name: Push Image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/aismarthome --all-tags
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
   docker-x64:
-    name:  Docker Build & Push
+    name:  Docker Build & Push - x64
     runs-on: ubuntu-latest
     needs:
       - build
@@ -80,4 +80,4 @@ jobs:
       working-directory: ./AISmartHomeApp/
       run: dotnet publish -c Release --arch x64
     - name: Push Image
-      run: docker push ${{ secrets.DOCKER_USERNAME }}/aismarthome --all-tags
+      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
