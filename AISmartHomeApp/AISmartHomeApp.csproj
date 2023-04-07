@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <PublishProfile>DefaultContainer</PublishProfile>
     <RollForward>LatestMinor</RollForward>
-    <ContainerImageTags>1.1.0;latest</ContainerImageTags>  
+    <ContainerImageTags>1.1.1;latest</ContainerImageTags>  
     <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
     <ContainerPort>80</ContainerPort>
   </PropertyGroup>
