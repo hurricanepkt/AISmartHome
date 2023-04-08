@@ -42,7 +42,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build Image
       working-directory: ./AISmartHomeApp/
-      run: dotnet publish -c Release --arch arm 
+      run: dotnet publish -c Release --arch arm  -p:ContainerImageName=${{ secrets.DOCKERHUB_USERNAME }}/aismarthome
     - name: Push Image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
   docker-arm64:
@@ -60,7 +60,7 @@ jobs:
         password: ${{ secrets.DOCKERHUB_TOKEN }}
     - name: Build Image
       working-directory: ./AISmartHomeApp/
-      run: dotnet publish -c Release --arch arm64 
+      run: dotnet publish -c Release --arch arm64  -p:ContainerImageName=${{ secrets.DOCKERHUB_USERNAME }}/aismarthome
     - name: Push Image
       run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
   docker-x64:
