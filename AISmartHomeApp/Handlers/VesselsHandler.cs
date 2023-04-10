@@ -18,7 +18,7 @@ namespace Handlers
 
         internal static IResult GetAllCallbacks(ReadOnlyDBRepo db)
         {
-            return TypedResults.Ok(db.GetVessels()));
+            return TypedResults.Ok(db.GetVessels());
         }
 
 
