@@ -13,9 +13,7 @@ public class ReadOnlyDBRepo
         _logger = logger;
         _memoryCache = memoryCache;
     }
-    private MemoryCacheEntryOptions _options = new MemoryCacheEntryOptions() {
-        SlidingExpiration = TimeSpan.FromSeconds(5)
-    };
+
     private static readonly object CacheLockObject = new object();
 
     public List<Vessel> GetVessels()
@@ -31,7 +29,10 @@ public class ReadOnlyDBRepo
         lock (CacheLockObject)
         {
             _logger.LogInformation("Caching " + cacheKey);
-            _memoryCache.Set<List<Vessel>>(cacheKey, _ctx.Vessels.ToList(), _options);
+            var opt = new MemoryCacheEntryOptions();
+            opt.SetSlidingExpiration(TimeSpan.FromSeconds(5));
+                
+            _memoryCache.Set<List<Vessel>>(cacheKey, _ctx.Vessels.ToList(), opt);
         }
         return _memoryCache.Get<List<Vessel>>(cacheKey) ?? new List<Vessel>();
     }
