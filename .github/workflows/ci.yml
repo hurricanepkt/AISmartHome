@@ -1,4 +1,14 @@
-name: Continuous Integration
+# This workflow uses actions that are not certified by GitHub.
+# They are provided by a third-party and are governed by
+# separate terms of service, privacy policy, and support
+# documentation.
+
+# GitHub recommends pinning actions to a commit SHA.
+# To get a newer version, you will need to update the SHA.
+# You can also reference a tag or branch, but the action may change without warning.
+
+name: Publish Docker image
+
 on:
   push:
   #   branches:
@@ -13,71 +23,39 @@ on:
 
 jobs:
   build:
-    name: Build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: 7.0.x
-    - name: Restore dependencies
-      working-directory: ./AISmartHomeApp/
-      run: dotnet restore
-    - name: Build
-      working-directory: ./AISmartHomeApp/
-      run: dotnet build --no-restore
-  docker-arm:
-    name:  Docker Build & Push - arm
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3  
-    - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build Image
-      working-directory: ./AISmartHomeApp/
-      run: dotnet publish -c Release --arch arm  -p:ContainerImageName=${{ secrets.DOCKERHUB_USERNAME }}/aismarthome
-    - name: Push Image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
-  docker-arm64:
-    name:  Docker Build & Push - arm64
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3  
-    - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build Image
-      working-directory: ./AISmartHomeApp/
-      run: dotnet publish -c Release --arch arm64  -p:ContainerImageName=${{ secrets.DOCKERHUB_USERNAME }}/aismarthome
-    - name: Push Image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
-  docker-x64:
-    name:  Docker Build & Push - x64
-    runs-on: ubuntu-latest
-    needs:
-      - build
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3  
-    - name: Docker Login
-      uses: docker/login-action@v2
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build Image
-      working-directory: ./AISmartHomeApp/
-      run: dotnet publish -c Release --arch x64 -p:ContainerImageName=${{ secrets.DOCKERHUB_USERNAME }}/aismarthome
-    - name: Push Image
-      run: docker push ${{ secrets.DOCKERHUB_USERNAME }}/aismarthome --all-tags
+      - name: Checkout
+        uses: actions/checkout@v3
+      # https://github.com/docker/setup-qemu-action
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      # https://github.com/docker/setup-buildx-action
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v2    
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          images: |
+            markgreenway/aismarthome
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+      - name: Login to DockerHub
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          platforms: linux/amd64,linux/arm64
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
