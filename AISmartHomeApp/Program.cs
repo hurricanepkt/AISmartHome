@@ -13,7 +13,7 @@ builder.Services.AddLogging( b=> b.AddConsole());
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<AisParser.Parser>();
 builder.Services.AddHostedService<AISservice>();
-builder.Services.AddSingleton<FileContext>();
+builder.Services.AddTransient<FileContext>();
 // builder.Services.AddHostedService<RepeatingService>();
 
 MessageStrategySetup.Setup(builder.Services);
