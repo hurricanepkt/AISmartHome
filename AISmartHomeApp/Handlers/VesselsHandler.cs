@@ -16,41 +16,46 @@ namespace Handlers
         }
 
 
-        internal static async Task<IResult> GetAllCallbacks(FileContext db)
+        internal static IResult GetAllCallbacks(ReadOnlyDBRepo db)
         {
-            return TypedResults.Ok(await db.Vessels.ToArrayAsync());
+            return TypedResults.Ok(db.GetVessels()));
         }
 
 
-        internal static async Task<IResult> GetHA(FileContext db)
+        internal static IResult GetHA(ReadOnlyDBRepo db)
         {
-            return await HomeAssistantFiltered(db, (f) => true);
+            return HomeAssistantFiltered(db, (f) => true);
         }
 
-        internal static async Task<IResult> GetHAwNSeconds(FileContext db, int seconds)
-        {
-            var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
-            return await HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo);
-        }
-
-        internal static async Task<IResult> GetHAComWNSeconds(FileContext db,bool strict, int seconds)
+        internal static IResult GetHAwNSeconds(ReadOnlyDBRepo db, int seconds)
         {
             var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
-            if (strict) {
-                return await HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && f.IsCommercial == true);
-            }else {
-                return await HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && (f.IsCommercial == true || f.IsCommercial == null));
-            }            
+            return HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo);
         }
 
-        private static async Task<IResult> HomeAssistantFiltered(FileContext db, Expression<Func<Vessel,bool>> filter) {
-            var thelist = (await db.Vessels.ToListAsync()).Where(filter.Compile()).ToList();            
+        internal static IResult GetHAComWNSeconds(ReadOnlyDBRepo db, bool strict, int seconds)
+        {
+            var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
+            if (strict)
+            {
+                return HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && f.IsCommercial == true);
+            }
+            else
+            {
+                return HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && (f.IsCommercial == true || f.IsCommercial == null));
+            }
+        }
+
+        private static IResult HomeAssistantFiltered(ReadOnlyDBRepo db, Expression<Func<Vessel, bool>> filter)
+        {
+            var thelist = db.GetVessels().Where(filter.Compile()).ToList();
             return TypedResults.Ok(
-                    new { 
+                    new
+                    {
                         count = thelist.Count,
                         Vessels = thelist,
                         Filter = filter.ToString(),
-                        CustomString = TheConfiguration.CustomString                   
+                        CustomString = TheConfiguration.CustomString
                     });
         }
 
