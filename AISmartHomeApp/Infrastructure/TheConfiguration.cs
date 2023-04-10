@@ -1,4 +1,5 @@
 using System.Collections;
+using Geolocation;
 
 namespace Infrastructure;
 
@@ -11,10 +12,11 @@ public class TheConfiguration : ConfigurationHelper {
     public static string JsonType => "application/json";
     
     // Ints 
-    public static int MaxFailures => GetIntValueByKeySafe("MaxFailures", 10);
-    public static int ServiceFrequency =>  GetIntValueByKeySafe("ServiceFrequency", 5);
+    public static int MaxDistance =>  GetIntValueByKeySafe("MaxDistance", 100);
     
     public static double BaseLocationLatitude => GetDoubleValueByKeySafe("BaseLocationLatitude", 27.774383);
     public static double BaseLocationLongitude => GetDoubleValueByKeySafe("BaseLocationLongitude", -82.633286);
     // Enums
+
+    public static DistanceUnit DistanceUnit => GetEnumValueByKeySafe("DistanceUnit", DistanceUnit.NauticalMiles);
 }   

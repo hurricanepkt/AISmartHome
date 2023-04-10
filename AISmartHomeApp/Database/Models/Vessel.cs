@@ -120,13 +120,21 @@ public class Vessel {
     public double Distance {
         get {
             try {
-            return GeoCalculator.GetDistance(TheConfiguration.BaseLocationLatitude, TheConfiguration.BaseLocationLongitude
-                    , Latitude ?? 0, Longitude ?? 0, decimalPlaces : 1, distanceUnit: DistanceUnit.NauticalMiles);
+                var retVal = GeoCalculator.GetDistance(TheConfiguration.BaseLocationLatitude, TheConfiguration.BaseLocationLongitude, Latitude ?? 0, Longitude ?? 0, decimalPlaces : 1, distanceUnit: DistanceUnit.NauticalMiles);
+                return retVal > TheConfiguration.MaxDistance ? 0.0d : retVal;
             }
             catch { 
                 return 0.0d;
             }
     }}
+
+    private ShipType[] commercialTypes = { AisParser.ShipType.Sailing,  AisParser.ShipType.PleasureCraft };
+    public bool? IsCommercial {
+        get {
+            if (ShipType == null) return null;
+            return !commercialTypes.Contains(ShipType ?? AisParser.ShipType.PleasureCraft);
+        }
+    }
     /*
     public string? GnssPositionStatus {get; set;}
     public string? PositionFixType {get; set;}

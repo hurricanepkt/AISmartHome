@@ -1,3 +1,4 @@
+using System.Linq.Expressions;
 using Database;
 using Infrastructure;
 using Microsoft.EntityFrameworkCore;
@@ -9,8 +10,9 @@ namespace Handlers
         internal static void Setup(RouteGroupBuilder callbacksGroup)
         {
             callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks);
-            callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHAformatted);
-            callbacksGroup.MapGet("/ha/{seconds}", CallbackHandlers.GetHAformattedNSeconds);
+            callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHA);
+            callbacksGroup.MapGet("/ha/{seconds}", CallbackHandlers.GetHAwNSeconds);
+            callbacksGroup.MapGet("/commercial/{strict}/{seconds}", CallbackHandlers.GetHAComWNSeconds);
         }
 
 
@@ -20,26 +22,34 @@ namespace Handlers
         }
 
 
-        internal static async Task<IResult> GetHAformatted(FileContext db)
+        internal static async Task<IResult> GetHA(FileContext db)
         {
-            var thelist = await db.Vessels.ToListAsync();
-
-            return TypedResults.Ok(
-                    new { 
-                        count = thelist.Count,
-                        Vessels = thelist,
-                        CustomString = TheConfiguration.CustomString                   
-                    });
+            return await HomeAssistantFiltered(db, (f) => true);
         }
 
-        internal static async Task<IResult> GetHAformattedNSeconds(FileContext db, int seconds)
+        internal static async Task<IResult> GetHAwNSeconds(FileContext db, int seconds)
         {
             var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
-            var thelist = (await db.Vessels.ToListAsync()).Where(f => f.LastUpdate > secondsAgo).ToList();            
+            return await HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo);
+        }
+
+        internal static async Task<IResult> GetHAComWNSeconds(FileContext db,bool strict, int seconds)
+        {
+            var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
+            if (strict) {
+                return await HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && f.IsCommercial == true);
+            }else {
+                return await HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && (f.IsCommercial == true || f.IsCommercial == null));
+            }            
+        }
+
+        private static async Task<IResult> HomeAssistantFiltered(FileContext db, Expression<Func<Vessel,bool>> filter) {
+            var thelist = (await db.Vessels.ToListAsync()).Where(filter.Compile()).ToList();            
             return TypedResults.Ok(
                     new { 
                         count = thelist.Count,
                         Vessels = thelist,
+                        Filter = filter.ToString(),
                         CustomString = TheConfiguration.CustomString                   
                     });
         }
