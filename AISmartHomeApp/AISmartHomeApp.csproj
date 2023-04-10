@@ -4,12 +4,8 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-    <PublishProfile>DefaultContainer</PublishProfile>
     <RollForward>LatestMinor</RollForward>
     <ContainerImageName>aismarthome</ContainerImageName>
-    <ContainerImageTags>1.1.7;latest</ContainerImageTags>  
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-    <ContainerPort>80</ContainerPort>
   </PropertyGroup>
 
   <ItemGroup>
