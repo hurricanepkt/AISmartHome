@@ -1,6 +1,7 @@
 using Database;
 using Handlers;
 using Infrastructure;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,7 +14,10 @@ builder.Services.AddLogging( b=> b.AddConsole());
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<AisParser.Parser>();
 builder.Services.AddHostedService<AISservice>();
-builder.Services.AddTransient<FileContext>();
+builder.Services.AddSingleton<FileContext>();
+builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
+builder.Services.AddTransient<ReadOnlyDBRepo>();
+
 // builder.Services.AddHostedService<RepeatingService>();
 
 MessageStrategySetup.Setup(builder.Services);
@@ -22,7 +26,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-CallbackHandlers.Setup(app.MapGroup("/vessels"));
+CallbackHandlers.Setup(app.MapGroup("/vessels"), app.Services.GetService<ReadOnlyDBRepo>());
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

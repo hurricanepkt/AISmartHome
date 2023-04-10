@@ -7,8 +7,10 @@ namespace Handlers
 {
     public class CallbackHandlers
     {
-        internal static void Setup(RouteGroupBuilder callbacksGroup)
+        private static ReadOnlyDBRepo? _db;
+        internal static void Setup(RouteGroupBuilder callbacksGroup, ReadOnlyDBRepo db)
         {
+            _db = db;
             callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks);
             callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHA);
             callbacksGroup.MapGet("/ha/{seconds}", CallbackHandlers.GetHAwNSeconds);
@@ -16,39 +18,41 @@ namespace Handlers
         }
 
 
-        internal static IResult GetAllCallbacks(ReadOnlyDBRepo db)
+        internal static IResult GetAllCallbacks()
         {
-            return TypedResults.Ok(db.GetVessels());
+            if (_db == null ) { throw new Exception("Not Initialized"); }
+            return TypedResults.Ok(_db.GetVessels());
         }
 
 
-        internal static IResult GetHA(ReadOnlyDBRepo db)
+        internal static IResult GetHA()
         {
-            return HomeAssistantFiltered(db, (f) => true);
+            return HomeAssistantFiltered((f) => true);
         }
 
-        internal static IResult GetHAwNSeconds(ReadOnlyDBRepo db, int seconds)
+        internal static IResult GetHAwNSeconds(int seconds)
         {
             var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
-            return HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo);
+            return HomeAssistantFiltered((f) => f.LastUpdate > secondsAgo);
         }
 
-        internal static IResult GetHAComWNSeconds(ReadOnlyDBRepo db, bool strict, int seconds)
+        internal static IResult GetHAComWNSeconds(bool strict, int seconds)
         {
             var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
             if (strict)
             {
-                return HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && f.IsCommercial == true);
+                return HomeAssistantFiltered((f) => f.LastUpdate > secondsAgo && f.IsCommercial == true);
             }
             else
             {
-                return HomeAssistantFiltered(db, (f) => f.LastUpdate > secondsAgo && (f.IsCommercial == true || f.IsCommercial == null));
+                return HomeAssistantFiltered((f) => f.LastUpdate > secondsAgo && (f.IsCommercial == true || f.IsCommercial == null));
             }
         }
 
-        private static IResult HomeAssistantFiltered(ReadOnlyDBRepo db, Expression<Func<Vessel, bool>> filter)
+        private static IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter)
         {
-            var thelist = db.GetVessels().Where(filter.Compile()).ToList();
+            if (_db == null ) { throw new Exception("Not Initialized"); }
+            var thelist = _db.GetVessels().Where(filter.Compile()).ToList();
             return TypedResults.Ok(
                     new
                     {
