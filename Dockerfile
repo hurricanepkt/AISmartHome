@@ -5,7 +5,7 @@ WORKDIR /source
 
 # copy csproj and restore as distinct layers
 COPY AISmartHomeApp/*.csproj .
-RUN dotnet restore --use-current-runtime  
+RUN dotnet restore
 
 # copy everything else and build app
 COPY AISmartHomeApp/. .
