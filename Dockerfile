@@ -5,11 +5,11 @@ WORKDIR /source
 
 # copy csproj and restore as distinct layers
 COPY AISmartHomeApp/*.csproj .
-RUN dotnet restore --use-current-runtime  
+RUN dotnet restore
 
 # copy everything else and build app
 COPY AISmartHomeApp/. .
-RUN dotnet publish  --use-current-runtime -c Release --self-contained false -o /app
+RUN dotnet publish -c Release --self-contained false -o /app
 
 
 # final stage/image
