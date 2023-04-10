@@ -10,6 +10,7 @@ namespace Handlers
         {
             callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks);
             callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHAformatted);
+            callbacksGroup.MapGet("/ha/{seconds}", CallbackHandlers.GetHAformattedNSeconds);
         }
 
 
@@ -26,11 +27,22 @@ namespace Handlers
             return TypedResults.Ok(
                     new { 
                         count = thelist.Count,
-                        incompleteCallbacks = thelist,
+                        Vessels = thelist,
                         CustomString = TheConfiguration.CustomString                   
                     });
         }
 
+        internal static async Task<IResult> GetHAformattedNSeconds(FileContext db, int seconds)
+        {
+            var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
+            var thelist = (await db.Vessels.ToListAsync()).Where(f => f.LastUpdate > secondsAgo).ToList();            
+            return TypedResults.Ok(
+                    new { 
+                        count = thelist.Count,
+                        Vessels = thelist,
+                        CustomString = TheConfiguration.CustomString                   
+                    });
+        }
 
     }
 }

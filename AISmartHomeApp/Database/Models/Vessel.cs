@@ -1,7 +1,15 @@
 using System.ComponentModel.DataAnnotations;
 using AisParser;
+using Geolocation;
+using Infrastructure;
 
 public class Vessel {
+    public Vessel()
+    {
+        LastUpdate = DateTime.UtcNow;
+        
+    }
+    
     [Key]
     public uint Mmsi {get; set;}
     public UInt32? Reserved {get; set;}
@@ -107,7 +115,18 @@ public class Vessel {
     public ManeuverIndicator?  ManeuverIndicator {get; set;}
     public ShipType? ShipType {get;set;}
     public Raim? Raim {get;set;}
-    
+    public DateTime LastUpdate { get; internal set; }
+
+    public double Distance {
+        get {
+            try {
+            return GeoCalculator.GetDistance(TheConfiguration.BaseLocationLatitude, TheConfiguration.BaseLocationLongitude
+                    , Latitude ?? 0, Longitude ?? 0, decimalPlaces : 1, distanceUnit: DistanceUnit.NauticalMiles);
+            }
+            catch { 
+                return 0.0d;
+            }
+    }}
     /*
     public string? GnssPositionStatus {get; set;}
     public string? PositionFixType {get; set;}

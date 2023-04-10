@@ -31,6 +31,16 @@ public class ConfigurationHelper {
             return defaultValue;
         }
         
+        
+    }
+
+    protected static double GetDoubleValueByKeySafe(string keyName, double defaultValue) {
+        try {
+            return double.Parse(GetStringValueByKeySafe(keyName));
+        } catch {
+            return defaultValue;
+        }
+        
     }
 
     protected static T GetEnumValueByKeySafe<T>(string keyName, T defaultValue) {

@@ -13,8 +13,8 @@ public class TheConfiguration : ConfigurationHelper {
     // Ints 
     public static int MaxFailures => GetIntValueByKeySafe("MaxFailures", 10);
     public static int ServiceFrequency =>  GetIntValueByKeySafe("ServiceFrequency", 5);
-
+    
+    public static double BaseLocationLatitude => GetDoubleValueByKeySafe("BaseLocationLatitude", 27.774383);
+    public static double BaseLocationLongitude => GetDoubleValueByKeySafe("BaseLocationLongitude", -82.633286);
     // Enums
-    public static AgressivenessLevel CleanupAggressiveness => GetEnumValueByKeySafe<AgressivenessLevel>("CleanupAggressiveness", AgressivenessLevel.AllComplete);
-    public enum AgressivenessLevel { AllComplete, SuccessOnly, None }
 }   
