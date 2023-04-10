@@ -14,7 +14,7 @@ RUN dotnet publish --use-current-runtime -c Release --self-contained false -o /a
 
 # final stage/image
 FROM mcr.microsoft.com/dotnet/aspnet:7.0
-WORKDIR /app
+WORKDIR /app 
 COPY --from=build /app .
 ENTRYPOINT ["dotnet", "AISmartHomeApp.dll"]
 
