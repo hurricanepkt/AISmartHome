@@ -15,8 +15,7 @@ builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<AisParser.Parser>();
 builder.Services.AddHostedService<AISservice>();
 builder.Services.AddSingleton<Context>();
-builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
-
+builder.Services.AddScoped<IVesselRepository, VesselRepository>();
 // builder.Services.AddHostedService<RepeatingService>();
 
 MessageStrategySetup.Setup(builder.Services);
@@ -25,7 +24,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-CallbackHandlers.Setup(app.MapGroup("/vessels"), app.Services.GetService<IVesselRepository>());
+CallbackHandlers.Setup(app.MapGroup("/vessels"), app.Services.GetRequiredService<IVesselRepository>());
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

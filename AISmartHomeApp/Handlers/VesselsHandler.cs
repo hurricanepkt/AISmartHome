@@ -51,8 +51,8 @@ namespace Handlers
 
         private static IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter)
         {
-            if (_db == null ) { throw new Exception("Not Initialized"); }
-            var thelist = _db.GetVessels().Where(filter.Compile()).ToList();
+            if (_db == null) { throw new Exception("Not Initialized"); }
+            var thelist = _db.Filtered(filter);
             return TypedResults.Ok(
                     new
                     {

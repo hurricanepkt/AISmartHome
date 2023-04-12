@@ -8,13 +8,13 @@ public class AISPacketHandler : INotificationHandler<AISNotification>
 {
     // private readonly IEnumerable<IMessageStrategy> _service;
     private Parser _parser;
-    private FileContext _ctx;
+    private VesselRepository _repo;
     private ILogger<AISPacketHandler> _logger;
 
-    public AISPacketHandler(Parser parser, FileContext ctx, ILogger<AISPacketHandler> logger)
+    public AISPacketHandler(Parser parser, VesselRepository ctx, ILogger<AISPacketHandler> logger)
     {
         _parser = parser;
-        _ctx = ctx;
+        _repo = ctx;
         _logger = logger;
     }
 
@@ -31,11 +31,11 @@ public class AISPacketHandler : INotificationHandler<AISNotification>
     }
 
     private async Task<Vessel> GetOrCreate(uint mmsi) {
-        Vessel? blah = await _ctx.Vessels.FindAsync(mmsi);
+        Vessel? blah = await _repo.FindByMmsi(mmsi);
         Vessel ret = new Vessel() { Mmsi = mmsi};
         if (blah is null) {            
-            await _ctx.Vessels.AddAsync(ret);
-            await _ctx.SaveChangesAsync();
+            await _repo.Add(ret);
+            await _repo.Save();
         }    
         return blah ?? ret;
     
