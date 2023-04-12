@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Database
 {
-    public class FileContext : DbContext
+    public class Context : DbContext
     {
         public DbSet<Vessel> Vessels { get; set; }
 

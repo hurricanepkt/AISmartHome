@@ -6,7 +6,7 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Configuration.AddEnvironmentVariables();
-builder.Services.AddDbContext<FileContext>();
+builder.Services.AddDbContext<Context>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Program).Assembly));
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c => { c.SwaggerDoc("v1", new OpenApiInfo { Title = "AISmartHomeDotNet", Version = "v1" }); });
@@ -14,9 +14,8 @@ builder.Services.AddLogging( b=> b.AddConsole());
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<AisParser.Parser>();
 builder.Services.AddHostedService<AISservice>();
-builder.Services.AddSingleton<FileContext>();
+builder.Services.AddSingleton<Context>();
 builder.Services.AddSingleton<IMemoryCache, MemoryCache>();
-builder.Services.AddTransient<ReadOnlyDBRepo>();
 
 // builder.Services.AddHostedService<RepeatingService>();
 
@@ -26,7 +25,7 @@ builder.Services.AddHealthChecks();
 
 var app = builder.Build();
 
-CallbackHandlers.Setup(app.MapGroup("/vessels"), app.Services.GetService<ReadOnlyDBRepo>());
+CallbackHandlers.Setup(app.MapGroup("/vessels"), app.Services.GetService<IVesselRepository>());
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {

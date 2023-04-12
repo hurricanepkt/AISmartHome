@@ -7,8 +7,8 @@ namespace Handlers
 {
     public class CallbackHandlers
     {
-        private static ReadOnlyDBRepo? _db;
-        internal static void Setup(RouteGroupBuilder callbacksGroup, ReadOnlyDBRepo db)
+        private static IVesselRepository? _db;
+        internal static void Setup(RouteGroupBuilder callbacksGroup, IVesselRepository db)
         {
             _db = db;
             callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks);
@@ -18,10 +18,10 @@ namespace Handlers
         }
 
 
-        internal static IResult GetAllCallbacks()
+        internal static async Task<IResult> GetAllCallbacks()
         {
             if (_db == null ) { throw new Exception("Not Initialized"); }
-            return TypedResults.Ok(_db.GetVessels());
+            return TypedResults.Ok(await _db.AllVesselsAsync());
         }
 
 
