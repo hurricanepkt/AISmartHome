@@ -1,45 +1,58 @@
-using System.Net;
-using System.Net.Sockets;
-using System.Text;
-using MediatR;
+using AisParser;
+using Database;
 
-public class AISservice  : BackgroundService
-{
-    private readonly IMediator _mediator;
-    public AISservice(IMediator mediator)
+namespace Services;
+
+public class AISService {
+
+
+    private Parser _parser;
+    private IVesselRepository _repo;
+    private ILogger<AISService> _logger;
+
+    public AISService(Parser parser, IVesselRepository ctx, ILogger<AISService> logger)
     {
-        _mediator = mediator;
+        _parser = parser;
+        _repo = ctx;
+        _logger = logger;
     }
-    private int listenPort = 10110;
-    protected override async Task ExecuteAsync(CancellationToken cancellationToken) 
+
+    public async Task Do(string message)
     {
-        UdpClient listener = new UdpClient(listenPort);
-        IPEndPoint groupEP = new IPEndPoint(IPAddress.Any, listenPort);
-        try
-        {
-            while(true) {
-                var data = (await listener.ReceiveAsync()).Buffer;
-                await _mediator.Publish(new AISNotification(data), cancellationToken);
+        try {
+            //for (int i = 0; i < message.Length; i++)  { Console.WriteLine($"{i} - {(int)message[i]}"); }
+            _logger.LogInformation(message);
+            var translated = _parser.Parse(message);
+            var vessel = await GetOrCreate(translated.Mmsi);
+            Copy(vessel, translated.GetType(), translated);
+        } catch (Exception ex) {
+            _logger.LogError(ex, "Handle Notification");
+        }
+    }
+
+    private async Task<Vessel> GetOrCreate(uint mmsi) {
+        Vessel? blah = await _repo.FindByMmsi(mmsi);
+        Vessel ret = new Vessel() { Mmsi = mmsi};
+        if (blah is null) {            
+            await _repo.Add(ret);
+            await _repo.Save();
+        }    
+        return blah ?? ret;
+    }
+    public static void Copy(Vessel vessel, Type childType, Object child)
+    {   
+        var parentProperties = vessel.GetType().GetProperties();
+        var childProperties = childType.GetProperties();
+        foreach (var childProperty in childProperties)
+        {   
+            try {                
+                var pt = parentProperties.First(f=> f.Name == childProperty.Name);
+                pt.SetValue(vessel, childProperty.GetValue(child));
+            }
+            catch(Exception ex)
+            {
+                throw new Exception($"Cant set property {childProperty.Name} with {childProperty.PropertyType}", ex);
             }
         }
-        catch (SocketException e)
-        {
-            Console.WriteLine(e);
-        }
-        finally
-        {
-            listener.Close();
-        }
     }
-}
-public class AISNotification : INotification
-{
-    public AISNotification(byte[] data)
-    {
-        Data = data;
-        var tmpMsg = Encoding.ASCII.GetString(data);
-        Message = tmpMsg.Replace("\n","").Replace("\r","");
-    }
-    public byte[] Data {get; set;}
-    public string Message {get;set;}
 }

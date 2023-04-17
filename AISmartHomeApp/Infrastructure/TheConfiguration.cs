@@ -19,4 +19,8 @@ public class TheConfiguration : ConfigurationHelper {
     // Enums
 
     public static DistanceUnit DistanceUnit => GetEnumValueByKeySafe("DistanceUnit", DistanceUnit.NauticalMiles);
+    public static DatabaseType DatabaseType => GetEnumValueByKeySafe("DatabaseType", DatabaseType.SqlLiteInMemory);
+
 }   
+
+public enum  DatabaseType  { FileSystem, SqlLiteInMemory,  }

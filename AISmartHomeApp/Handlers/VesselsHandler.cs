@@ -5,38 +5,41 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Handlers
 {
-    public class CallbackHandlers
+    public class VesselsHandler
     {
-        private static IVesselRepository? _db;
-        internal static void Setup(RouteGroupBuilder callbacksGroup, IVesselRepository db)
+        public VesselsHandler(IVesselRepository? db)
         {
             _db = db;
-            callbacksGroup.MapGet("/", CallbackHandlers.GetAllCallbacks);
-            callbacksGroup.MapGet("/homeassistant", CallbackHandlers.GetHA);
-            callbacksGroup.MapGet("/ha/{seconds}", CallbackHandlers.GetHAwNSeconds);
-            callbacksGroup.MapGet("/commercial/{strict}/{seconds}", CallbackHandlers.GetHAComWNSeconds);
+        }
+        private IVesselRepository? _db;
+        internal void Setup(RouteGroupBuilder group)
+        {
+            group.MapGet("/", GetAllCallbacks);
+            group.MapGet("/homeassistant", GetHA);
+            group.MapGet("/ha/{seconds}", GetHAwNSeconds);
+            group.MapGet("/commercial/{strict}/{seconds}", GetHAComWNSeconds);
         }
 
 
-        internal static async Task<IResult> GetAllCallbacks()
+        internal async Task<IResult> GetAllCallbacks()
         {
             if (_db == null ) { throw new Exception("Not Initialized"); }
             return TypedResults.Ok(await _db.AllVesselsAsync());
         }
 
 
-        internal static IResult GetHA()
+        internal IResult GetHA()
         {
             return HomeAssistantFiltered((f) => true);
         }
 
-        internal static IResult GetHAwNSeconds(int seconds)
+        internal IResult GetHAwNSeconds(int seconds)
         {
             var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
             return HomeAssistantFiltered((f) => f.LastUpdate > secondsAgo);
         }
 
-        internal static IResult GetHAComWNSeconds(bool strict, int seconds)
+        internal IResult GetHAComWNSeconds(bool strict, int seconds)
         {
             var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
             if (strict)
@@ -49,7 +52,7 @@ namespace Handlers
             }
         }
 
-        private static IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter)
+        private IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter)
         {
             if (_db == null) { throw new Exception("Not Initialized"); }
             var thelist = _db.Filtered(filter);

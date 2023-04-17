@@ -9,7 +9,7 @@ public class ConfigurationHelper {
                 // Display the details with key and value
         foreach (DictionaryEntry i in _data)
         {
-            _logger.LogInformation("{0}:{1}", i.Key, i.Value);
+            _logger.LogDebug("{0}:{1}", i.Key, i.Value);
         }
     }
     protected static IDictionary _data = new Dictionary<string,string>();
