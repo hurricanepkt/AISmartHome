@@ -3,7 +3,7 @@ namespace AISMartHome.Tests;
 [TestFixture]
 public class MessagePassingTests
 {   
-    IDictionary<string,string> vesselFields;
+    IDictionary<string,string> vesselFields = new Dictionary<string,string>();
     [SetUp]
     public void Setup()
     {
