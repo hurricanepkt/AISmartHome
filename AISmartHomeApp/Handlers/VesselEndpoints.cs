@@ -10,7 +10,7 @@ public static class VesselEndpoints
 
     public static RouteGroupBuilder MapVesselEndpoints(this RouteGroupBuilder group)
     {
-        group.MapGet("/",GetAllCallbacks);
+        group.MapGet("/",GetAllVessels);
         group.MapGet("/homeassistant",GetHA);
         group.MapGet("/ha/{seconds}", GetHAwNSeconds);
         group.MapGet("/commercial/{strict}/{seconds}", GetHAComWNSeconds);
@@ -18,7 +18,7 @@ public static class VesselEndpoints
     }
 
 
-    public static async Task<IResult> GetAllCallbacks([FromServices] IVesselRepository repo)
+    public static async Task<IResult> GetAllVessels([FromServices] IVesselRepository repo)
     {
         if (repo == null ) { throw new Exception("Not Initialized"); }
         return TypedResults.Ok(await repo.AllVesselsAsync());
@@ -52,7 +52,7 @@ public static class VesselEndpoints
     public static IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter, IVesselRepository repo)
     {
         if (repo == null) { throw new Exception("Not Initialized"); }
-        var thelist = repo.Filtered(filter);
+        var thelist = repo.FilteredDto(filter);
         return TypedResults.Ok(
                 new
                 {

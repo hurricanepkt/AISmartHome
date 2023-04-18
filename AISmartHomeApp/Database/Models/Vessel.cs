@@ -128,6 +128,8 @@ public class Vessel {
             }
     }}
 
+    public int SecondsAgo => (int)(DateTime.UtcNow - LastUpdate).TotalSeconds;
+
     private ShipType[] commercialTypes = { AisParser.ShipType.Sailing,  AisParser.ShipType.PleasureCraft };
     public bool? IsCommercial {
         get {
