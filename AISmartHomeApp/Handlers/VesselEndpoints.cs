@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 using Database;
 using Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 
 namespace Handlers;
 
@@ -17,25 +18,25 @@ public static class VesselEndpoints
     }
 
 
-    public static async Task<IResult> GetAllCallbacks(VesselRepository repo)
+    public static async Task<IResult> GetAllCallbacks([FromServices] IVesselRepository repo)
     {
         if (repo == null ) { throw new Exception("Not Initialized"); }
         return TypedResults.Ok(await repo.AllVesselsAsync());
     }
 
 
-    public static IResult GetHA(VesselRepository repo)
+    public static IResult GetHA([FromServices] IVesselRepository repo)
     {
         return HomeAssistantFiltered((f) => true, repo);
     }
 
-    public static IResult GetHAwNSeconds(int seconds,VesselRepository repo)
+    public static IResult GetHAwNSeconds(int seconds,[FromServices] IVesselRepository repo)
     {
         var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
         return HomeAssistantFiltered((f) => f.LastUpdate > secondsAgo, repo);
     }
 
-    public static IResult GetHAComWNSeconds(bool strict, int seconds,VesselRepository repo)
+    public static IResult GetHAComWNSeconds(bool strict, int seconds,[FromServices] IVesselRepository repo)
     {
         var secondsAgo = DateTime.UtcNow.AddSeconds(-1 * seconds);
         if (strict)
@@ -48,7 +49,7 @@ public static class VesselEndpoints
         }
     }
 
-    public static IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter,VesselRepository repo)
+    public static IResult HomeAssistantFiltered(Expression<Func<Vessel, bool>> filter, IVesselRepository repo)
     {
         if (repo == null) { throw new Exception("Not Initialized"); }
         var thelist = repo.Filtered(filter);
