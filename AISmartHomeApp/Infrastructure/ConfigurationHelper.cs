@@ -3,14 +3,8 @@ using System.Collections;
 namespace Infrastructure;
 
 public class ConfigurationHelper {
-    private static ILogger _logger { get => StaticLoggerFactory.GetStaticLogger<ConfigurationHelper>(); }
     public static void Setup(IDictionary data){
         _data = data;
-                // Display the details with key and value
-        foreach (DictionaryEntry i in _data)
-        {
-            _logger.LogDebug("{0}:{1}", i.Key, i.Value);
-        }
     }
     protected static IDictionary _data = new Dictionary<string,string>();
     protected static string GetStringValueByKeySafe(string keyName, string defaultValue = "") {

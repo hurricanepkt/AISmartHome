@@ -23,8 +23,6 @@ builder.Services.AddHealthChecks();
 
 
 var app = builder.Build();
-StaticLoggerFactory.Initialize(app.Services.GetRequiredService<ILoggerFactory>());
-
 using (var scope = app.Services.CreateScope())
 {
     var repo = scope.ServiceProvider.GetRequiredService<IVesselRepository>();
