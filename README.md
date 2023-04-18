@@ -17,6 +17,9 @@ Using docker compose
         volumes:
             - /AppData/aismarthome:/Data
 ```
+## Source Code
+
+[github.com/hurricanepkt/AISmartHome](https://github.com/hurricanepkt/AISmartHome)
 
 ## Contributing
 
@@ -27,4 +30,4 @@ Please make sure to update tests as appropriate.
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[MIT](https://github.com/hurricanepkt/AISmartHome/blob/master/LICENSE)
