@@ -1,7 +1,6 @@
 using Database;
 using Handlers;
 using Infrastructure;
-using Microsoft.Extensions.Caching.Memory;
 using Microsoft.OpenApi.Models;
 using Services;
 
