@@ -17,16 +17,18 @@ public class AISService {
         _logger = logger;
     }
 
+
     public async Task Do(string message)
     {
         try {
-            //for (int i = 0; i < message.Length; i++)  { Console.WriteLine($"{i} - {(int)message[i]}"); }
-            _logger.LogInformation(message);
-            var translated = _parser.Parse(message);
+            var msg = message.Replace("\n", "").Replace("\r", "");
+            _logger.LogInformation(msg);
+            var translated = _parser.Parse(msg);
             var vessel = await GetOrCreate(translated.Mmsi);
-            Copy(vessel, translated.GetType(), translated);
+            Copy(vessel, translated.GetType(), translated);           
+            
         } catch (Exception ex) {
-            _logger.LogError(ex, "Handle Notification");
+            _logger.LogError(ex, "Exception occurred on Parse / Save");
         }
     }
 

@@ -16,8 +16,8 @@ namespace Database
             this.logger = logger;
             logger.LogInformation("Context_ctor_end");
         }
-        public DbSet<Vessel> Vessels { get; set; }
-        public DbSet<AppInfo> AppInfos {get; set;}
+        public DbSet<Vessel> Vessels => Set<Vessel>();
+        public DbSet<AppInfo> AppInfos => Set<AppInfo>();
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

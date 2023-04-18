@@ -14,6 +14,7 @@ public class VesselRepository : IVesselRepository
     public async Task<Vessel?> FindByMmsi(uint mmsi) => await _context.Vessels.FindAsync(mmsi);
     public async Task Add(Vessel vessel) => await _context.Vessels.AddAsync(vessel);
     public async Task Save() => await _context.SaveChangesAsync();
+    public async Task EnsureCreated(CancellationToken token) => await _context.Database.EnsureCreatedAsync(token);
 }
 
 public interface IVesselRepository {
@@ -24,6 +25,7 @@ public interface IVesselRepository {
     Task<Vessel?> FindByMmsi(uint mmsi);
     Task Add(Vessel vessel);
     Task Save();
+    Task EnsureCreated(CancellationToken token);
 
 
 }

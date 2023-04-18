@@ -15,26 +15,24 @@ builder.Services.AddLogging( b=> b.AddConsole());
 builder.Services.AddSingleton<HttpClient>();
 builder.Services.AddSingleton<AisParser.Parser>();
 //builder.Services.AddHostedService<AISservice>();
-builder.Services.AddSingleton<Context>();
-builder.Services.AddScoped<VesselsHandler>();
+builder.Services.AddScoped<Context>();
+
 builder.Services.AddScoped<IVesselRepository, VesselRepository>();
 builder.Services.AddScoped<AISService>();
-builder.Services.AddScoped<PacketServer>();
-// builder.Services.AddHostedService<RepeatingService>();
+builder.Services.AddHostedService<HighPerformanceServer>();
 builder.Services.AddHealthChecks();
 
 
 var app = builder.Build();
 StaticLoggerFactory.Initialize(app.Services.GetRequiredService<ILoggerFactory>());
+
 using (var scope = app.Services.CreateScope())
 {
-    var dbcontext = scope.ServiceProvider.GetRequiredService<Context>();
-    DbInitializer.Initialize(dbcontext);
-    var handlers = scope.ServiceProvider.GetRequiredService<VesselsHandler>();
-    handlers.Setup(app.MapGroup("/vessels"));
-    var blah = scope.ServiceProvider.GetRequiredService<PacketServer>();
-    blah.Start();
+    var repo = scope.ServiceProvider.GetRequiredService<IVesselRepository>();
+    await repo.EnsureCreated(new CancellationToken());
 }
+
+app.MapGroup("/vessels").MapVesselEndpoints();
 
 app.UseSwagger();
 app.UseSwaggerUI(c =>
