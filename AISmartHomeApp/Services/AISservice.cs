@@ -26,7 +26,8 @@ public class AISService {
             var translated = _parser.Parse(msg);
             var vessel = await GetOrCreate(translated.Mmsi);
             Copy(vessel, translated.GetType(), translated);           
-            
+            Fix(vessel);
+            _repo.Save();
         } catch (Exception ex) {
             _logger.LogError(ex, "Exception occurred on Parse / Save");
         }
@@ -38,9 +39,8 @@ public class AISService {
         if (blah is null) {            
             await _repo.Add(ret);
             await _repo.Save();
-        }    
-        
-        return Fix(blah ?? ret);
+        }   
+        return blah ?? ret;
     }
 
     private Vessel Fix(Vessel vessel)
