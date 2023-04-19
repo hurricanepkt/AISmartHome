@@ -7,10 +7,6 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RollForward>LatestMinor</RollForward>
     <PublishRelease>true</PublishRelease>
-    <TargetFrameworks>net7.0</TargetFrameworks>
-    <ContainerImageName>aismarthome</ContainerImageName>
-    <RuntimeIdentifiers>linux-x64</RuntimeIdentifiers>
-    <RuntimeIdentifiers>linux-arm64</RuntimeIdentifiers>
   </PropertyGroup>
 
   <ItemGroup>

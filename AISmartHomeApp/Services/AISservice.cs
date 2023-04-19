@@ -39,8 +39,16 @@ public class AISService {
             await _repo.Add(ret);
             await _repo.Save();
         }    
-        return blah ?? ret;
+        
+        return Fix(blah ?? ret);
     }
+
+    private Vessel Fix(Vessel vessel)
+    {
+        vessel.LastUpdate = DateTime.UtcNow;
+        return vessel;
+    }
+
     public static void Copy(Vessel vessel, Type childType, Object child)
     {   
         var parentProperties = vessel.GetType().GetProperties();
