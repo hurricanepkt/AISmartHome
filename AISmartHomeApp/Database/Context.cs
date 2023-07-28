@@ -8,6 +8,7 @@ namespace Database
 {
     public class Context : DbContext
     {
+        public static object padlock = new Object();
         private readonly ILogger<Context> logger;
 
         public Context(DbContextOptions<Context> options, ILogger<Context> logger) : base(options)
@@ -22,6 +23,7 @@ namespace Database
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            lock(padlock) {
             logger.LogInformation("OnConfiguring_start");          
             switch(TheConfiguration.DatabaseType) {
                 case DatabaseType.FileSystem:
@@ -32,6 +34,7 @@ namespace Database
                     break;
             }               
             logger.LogInformation("OnConfiguring_end");
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
