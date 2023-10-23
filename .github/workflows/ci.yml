@@ -22,7 +22,7 @@ on:
   #     - 'dev'
   schedule:
     # * is a special character in YAML so you have to quote this string
-    - cron:  '30 0 * * 5' # every Friday at 00:30
+    - cron:  '30 0 * * *' # every day at 00:30
 jobs:
   build:
     runs-on: ubuntu-latest
