@@ -9,7 +9,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AisParser" Version="1.0.76" />
-    <PackageReference Include="FileBaseContext" Version="1.0.1" />
+    <PackageReference Include="FileBaseContext" Version="4.0.1" />
     <PackageReference Include="Geolocation" Version="1.2.1" />
     <PackageReference Include="Microsoft.NET.Build.Containers" Version="7.0.406" />
     <PackageReference Include="NetCoreServer" Version="7.0.0" />
