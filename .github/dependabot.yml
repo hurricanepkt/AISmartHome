@@ -4,7 +4,7 @@ updates:
     directory: "/"
     schedule: 
       interval: "daily"
-      time: "23:28"
+      time: "10:28"
       timezone: "America/New_York"
     labels:
       - "nuget-dependencies"
@@ -12,7 +12,7 @@ updates:
     directory: "/"
     schedule: 
       interval: "daily"
-      time: "23:40"
+      time: "10:40"
       timezone: "America/New_York"
     labels:
       - "docker-dependencies"
