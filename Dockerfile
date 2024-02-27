@@ -9,7 +9,7 @@ RUN dotnet restore --use-current-runtime
 
 # copy everything else and build app
 COPY AISmartHomeApp/. .
-RUN dotnet publish --use-current-runtime --no-self-contained  -o /app
+RUN dotnet publish --use-current-runtime --no-self-contained  -o /app AISmartHomeApp.csproj
 
 
 # final stage/image
