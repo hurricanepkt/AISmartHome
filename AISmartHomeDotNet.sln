@@ -1,11 +1,11 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AISmartHomeApp", "AISmartHomeApp\AISmartHomeApp.csproj", "{DF67E252-C133-4C24-BE67-6E76CA8B9461}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AISmartHomeApp", "AISmartHomeApp\AISmartHomeApp.csproj", "{DF67E252-C133-4C24-BE67-6E76CA8B9461}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AISMartHome.Tests", "AISMartHome.Tests\AISMartHome.Tests.csproj", "{B7EF722D-0234-4B1A-BD8C-46810CA63F8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AISMartHome.Tests", "AISMartHome.Tests\AISMartHome.Tests.csproj", "{B7EF722D-0234-4B1A-BD8C-46810CA63F8A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
