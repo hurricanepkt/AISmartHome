@@ -1,4 +1,4 @@
-namespace AISmartHome.Tests;
+namespace AISMartHome.Tests;
 
 public class Tests
 {
