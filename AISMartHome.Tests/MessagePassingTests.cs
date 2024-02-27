@@ -1,6 +1,6 @@
 namespace AISmartHome.Tests;
 
-
+[TestFixture]
 public class MessagePassingTests
 {   
     IDictionary<string,string> vesselFields = new Dictionary<string,string>();
