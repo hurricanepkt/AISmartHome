@@ -11,7 +11,6 @@
     <PackageReference Include="AisParser" Version="1.0.76" />
     <PackageReference Include="FileBaseContext" Version="4.0.1" />
     <PackageReference Include="Geolocation" Version="1.2.1" />
-    <PackageReference Include="Microsoft.NET.Build.Containers" Version="8.0.200" />
     <PackageReference Include="NetCoreServer" Version="8.0.7" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="6.5.0" />
