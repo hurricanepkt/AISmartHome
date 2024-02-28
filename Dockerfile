@@ -1,22 +1,21 @@
-# Learn about building .NET container images:
-# https://github.com/dotnet/dotnet-docker/blob/main/samples/README.md
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+# https://hub.docker.com/_/microsoft-dotnet
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /source
 
 # copy csproj and restore as distinct layers
-COPY AISmartHomeApp/*.csproj .
-RUN dotnet restore --use-current-runtime
+COPY *.sln .
+COPY AISmartHomeApp/*.csproj ./AISmartHomeApp/
+RUN dotnet restore
 
 # copy everything else and build app
-COPY AISmartHomeApp/. .
-RUN dotnet publish --use-current-runtime --no-self-contained  -o /app AISmartHomeApp.csproj
-
+COPY AISmartHomeApp/. ./AISmartHomeApp/
+WORKDIR /source/AISmartHomeApp
+RUN dotnet publish -c release -o /app --no-restore
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine
-WORKDIR /app 
-RUN apk --no-cache add curl
-COPY --from=build /app .
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+WORKDIR /app
+COPY --from=build /app ./
 ENV ASPNETCORE_URLS=http://+:80
 HEALTHCHECK CMD curl --fail http://localhost:80/health || exit
 EXPOSE 80
