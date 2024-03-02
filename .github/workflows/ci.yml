@@ -24,22 +24,37 @@ on:
     # * is a special character in YAML so you have to quote this string
     - cron:  '45 04 * * *' # every day at 00:30
 jobs:
-  build:
+  setup:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Set output
         id: vars
         run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+  check:
+    runs-on: ubuntu-latest
+    needs: setup
+    steps:
       - name: Check output
-        env:
-          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
-        run: |
-          echo $RELEASE_VERSION
-          echo ${{ steps.vars.outputs.tag }}
+      env:
+        RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+      run: |
+        echo $RELEASE_VERSION
+        echo ${{ steps.vars.outputs.tag }}
+  build:
+    runs-on: ubuntu-latest
+    needs: check
+    steps:
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore
+      - name: Test
+        run: dotnet test --no-build --verbosity normal
+
       # https://github.com/docker/setup-buildx-action
       - name: Login to DockerHub
         if: github.event_name != 'pull_request'
