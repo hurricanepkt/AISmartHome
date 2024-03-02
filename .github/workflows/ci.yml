@@ -28,6 +28,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Set output
+        id: vars
+        run: echo "tag=${GITHUB_REF#refs/*/}" >> $GITHUB_OUTPUT
+      - name: Check output
+        env:
+          RELEASE_VERSION: ${{ steps.vars.outputs.tag }}
+        run: |
+          echo $RELEASE_VERSION
+          echo ${{ steps.vars.outputs.tag }}
       - uses: actions/setup-dotnet@v4
         with:
           global-json-file: global.json
@@ -54,7 +63,7 @@ jobs:
 
       - name: Publish and push the container image
         run: |
-          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.meta.outputs.labels }} --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
+          dotnet publish -t:PublishContainer -p ContainerImageTag=latest;${{ steps.vars.outputs.tag }} --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
 
 
 
