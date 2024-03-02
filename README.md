@@ -28,6 +28,12 @@ to discuss what you would like to change.
 
 Please make sure to update tests as appropriate.
 
+## TODO
+
+- get it deploying amd64 as well as arm64
+- integrate into balena app
+- build for hacs
+
 ## License
 
 [MIT](https://github.com/hurricanepkt/AISmartHome/blob/master/LICENSE)
