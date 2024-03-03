@@ -65,7 +65,7 @@ jobs:
       
       - name: Docker meta
         id: meta
-        uses: docker/metadata-action@v4
+        uses: docker/metadata-action@v5
         with:
           images: |
             markgreenway/aismarthome
@@ -75,13 +75,12 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
             type=semver,pattern={{major}}
-            type=semver,pattern={{major}},{{major}}.{{minor}},{{version}},latest
 
 
       - name: Publish and push the container image
         run: |
           echo ${{ steps.meta.outputs }}
-          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
+          dotnet publish -t:PublishContainer --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
 
 
       # - name: Build and push
