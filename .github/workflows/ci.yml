@@ -79,7 +79,7 @@ jobs:
 
       - name: Publish and push the container image
         run: |
-          echo ${{ steps.meta.outputs }}
+          echo ${{ steps.meta.outputs.tags }}  | sed 's/^.\{16\}//g' | tr '\n' ','
           dotnet publish -t:PublishContainer --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
 
 
