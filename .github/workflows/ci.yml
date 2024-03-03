@@ -79,7 +79,7 @@ jobs:
       - name: Publish and push the container image
         run: |
           echo ${{ steps.meta.outputs }}
-          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
+          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch arm64 -p ContainerPlatform=linux/arm64
       
       - name:  Debug 
         run: |
