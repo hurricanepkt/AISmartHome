@@ -70,7 +70,9 @@ jobs:
           images: |
             markgreenway/aismarthome
           tags: |
-            type=semver,prefix=i,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}.{{minor}}.{{patch}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
 
 
 
