@@ -79,9 +79,9 @@ jobs:
       - name: Publish and push the arm container image
         run: |
           dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch arm64 -p ContainerPlatform=linux/arm64
-      - name: Publish and push the x65 container image
+      - name: Publish and push the x64 container image
         run: |
-          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch smf64 -p ContainerPlatform=linux/amd64
+          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch amd64 -p ContainerPlatform=linux/amd64
 
 
       - name: Build and push
