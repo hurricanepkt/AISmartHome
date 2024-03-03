@@ -78,20 +78,20 @@ jobs:
 
       - name: Publish and push the arm container image
         run: |
-          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch arm64 -p ContainerPlatform=linux/arm64
+          dotnet publish -t:PublishContainer -p ContainerImageTag='"${{ steps.vars.outputs.tag }};latest"' --arch arm64 -p ContainerPlatform=linux/arm64 -p ContainerRegistry=docker.io
       - name: Publish and push the x64 container image
         run: |
-          dotnet publish -t:PublishContainer -p ContainerImageTag=${{ steps.vars.outputs.tag }} --arch amd64 -p ContainerPlatform=linux/amd64
+          dotnet publish -t:PublishContainer -p ContainerImageTag='"${{ steps.vars.outputs.tag }};latest"' --arch amd64 -p ContainerPlatform=linux/amd64 -p ContainerRegistry=docker.io
 
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          platforms: linux/amd64,linux/arm64
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+      # - name: Build and push
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: .
+      #     platforms: linux/amd64,linux/arm64
+      #     push: ${{ github.event_name != 'pull_request' }}
+      #     tags: ${{ steps.meta.outputs.tags }}
+      #     labels: ${{ steps.meta.outputs.labels }}
       - name: Docker Hub Description
         uses: peter-evans/dockerhub-description@v3
         with:
